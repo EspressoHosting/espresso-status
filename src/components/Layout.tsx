@@ -43,7 +43,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               © {new Date().getFullYear()} EspressoHost. All rights reserved.
             </div>
             <div className="text-sm text-text-muted">
-              Status page auto-refreshes every 30 seconds
+              Status page auto-refreshes every 5 minutes
             </div>
           </div>
         </div>
