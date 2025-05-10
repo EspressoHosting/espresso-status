@@ -6,7 +6,7 @@ import StatusCard from './StatusCard';
 import SystemMetrics from './SystemMetrics';
 
 const StatusDashboard: React.FC = () => {
-  const { services, loading, error, lastUpdated, refreshServices } = useServices();
+  const { services, loading, error, lastUpdated, refreshServices, isRefreshDisabled } = useServices();
   
   const handleRefresh = () => {
     refreshServices();
@@ -35,13 +35,19 @@ const StatusDashboard: React.FC = () => {
         </div>
         
         <motion.button
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent hover:bg-accent-hover transition-colors text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300"
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-300 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${
+            isRefreshDisabled 
+              ? 'bg-accent/50 cursor-not-allowed' 
+              : 'bg-accent hover:bg-accent-hover'
+          }`}
           onClick={handleRefresh}
-          whileTap={{ scale: 0.95 }}
-          disabled={loading}
+          whileTap={{ scale: isRefreshDisabled ? 1 : 0.95 }}
+          disabled={loading || isRefreshDisabled}
         >
           <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          <span>{loading ? 'Refreshing...' : 'Refresh Now'}</span>
+          <span>
+            {loading ? 'Refreshing...' : isRefreshDisabled ? 'Wait 1 minute' : 'Refresh Now'}
+          </span>
         </motion.button>
       </div>
       
@@ -88,4 +94,4 @@ const StatusDashboard: React.FC = () => {
   );
 };
 
-export default StatusDashboard
+export default StatusDashboard;
