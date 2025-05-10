@@ -8,6 +8,7 @@ interface ServiceContextType {
   error: ServiceError | null;
   lastUpdated: Date | null;
   refreshServices: () => Promise<void>;
+  isRefreshDisabled: boolean;
 }
 
 const ServiceContext = createContext<ServiceContextType>({
@@ -16,6 +17,7 @@ const ServiceContext = createContext<ServiceContextType>({
   error: null,
   lastUpdated: null,
   refreshServices: async () => {},
+  isRefreshDisabled: false,
 });
 
 export const useServices = () => useContext(ServiceContext);
@@ -27,15 +29,20 @@ interface ServiceProviderProps {
 
 export const ServiceProvider: React.FC<ServiceProviderProps> = ({ 
   children, 
-  refreshInterval = 30000 // 30 seconds default
+  refreshInterval = 300000 // 5 minutes default
 }) => {
   const [services, setServices] = useState<ServiceStatus[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<ServiceError | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isRefreshDisabled, setIsRefreshDisabled] = useState<boolean>(false);
   
   const refreshServices = async () => {
+    if (isRefreshDisabled) return;
+    
     setLoading(true);
+    setIsRefreshDisabled(true);
+    
     try {
       const { services: newServices, error: apiError } = await checkAllServices();
       
@@ -51,6 +58,11 @@ export const ServiceProvider: React.FC<ServiceProviderProps> = ({
       setError({ message: 'Failed to fetch service status', service: 'Status API' });
     } finally {
       setLoading(false);
+      
+      // Enable refresh button after 1 minute
+      setTimeout(() => {
+        setIsRefreshDisabled(false);
+      }, 60000);
     }
   };
   
@@ -69,7 +81,14 @@ export const ServiceProvider: React.FC<ServiceProviderProps> = ({
   }, [refreshInterval]);
   
   return (
-    <ServiceContext.Provider value={{ services, loading, error, lastUpdated, refreshServices }}>
+    <ServiceContext.Provider value={{ 
+      services, 
+      loading, 
+      error, 
+      lastUpdated, 
+      refreshServices,
+      isRefreshDisabled 
+    }}>
       {children}
     </ServiceContext.Provider>
   );
