@@ -25,4 +25,4 @@ Thanks for trusting EspressoHost — brewed for performance.
 
 ---
 
-Made with love by [</DevMatei>](https://github.com/devmatei) 💻💖
+Made with love by [<DevMatei />](https://github.com/devmatei) 💻💖
