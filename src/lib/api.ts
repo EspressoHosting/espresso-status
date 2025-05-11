@@ -8,8 +8,12 @@ const servicesList = [
     url: 'https://espressohost.xyz'
   },
   { 
-    name: 'Game Panel', 
+    name: 'Paid Panel', 
     url: 'https://panel.espressohost.xyz'
+  },
+  { 
+    name: 'Free Panel', 
+    url: 'https://free.espressohost.xyz'
   },
   { 
     name: 'EU Node', 
